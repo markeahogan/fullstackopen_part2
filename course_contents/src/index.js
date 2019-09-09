@@ -4,9 +4,9 @@ import ReactDOM from 'react-dom'
 const Header = props =>
   <h1>{props.course}</h1>
 
-const Total = props => {
-  const parts = props.parts;
-  return (<p>Number of exercises {parts[0].exercises + parts[1].exercises + parts[2].exercises}</p>)
+const Total = ({parts}) => {
+  const sum = parts.reduce((sum, x) => sum += x.exercises, 0);
+  return (<p>total of {sum} exercises</p>)
 }  
 
 const Part = props =>
