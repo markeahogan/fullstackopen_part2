@@ -28,7 +28,7 @@ const App = () => {
         
       setNewName('');
       setNewNumber('');
-    }else{
+    } else {
       alert(`${newName} is already added to phonebook`);
     }
   }
@@ -36,6 +36,13 @@ const App = () => {
   const filterPersons = () => {
     if (filter === '') return persons;    
     return persons.filter(x => x.name.toLowerCase().includes(filter.toLowerCase()));
+  }
+
+  const remove = (id) => {
+    personService.remove(id)
+      .then(() => {
+        setPersons(persons.filter(x => x.id !== id));
+      });
   }
 
   return (
@@ -47,7 +54,7 @@ const App = () => {
         setName={setNewName} setNumber={setNewNumber}
         onSubmit={onSubmit} />
       <h2>Numbers</h2>
-      <Persons persons={filterPersons()}/>
+      <Persons persons={filterPersons()} remove={remove} />
     </div>
   )
 }
