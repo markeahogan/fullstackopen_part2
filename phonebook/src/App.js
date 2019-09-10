@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import personService from './services/personService';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
@@ -11,11 +11,8 @@ const App = () => {
   const [ filter, setFilter ] = useState('');
 
   useEffect(() => {
-    axios
-      .get('http://localhost:3001/persons')
-      .then((response) => {
-        setPersons(response.data);
-      })
+    personService.getAll()
+      .then(persons => setPersons(persons))
   }, [])
 
   const onSubmit = (event) => {
@@ -26,7 +23,9 @@ const App = () => {
         name:newName,
         number:newNumber
       };
-      setPersons(persons.concat(newPerson));
+      personService.add(newPerson)
+        .then(x => setPersons(persons.concat(newPerson)));
+        
       setNewName('');
       setNewNumber('');
     }else{
