@@ -25,7 +25,7 @@ function App() {
   } else if (filteredCountries().length === 1) {
     resultElement = <Country data={filteredCountries()[0]} />;
   } else {
-    resultElement = <ResultsList results={filteredCountries()} />
+    resultElement = <ResultsList results={filteredCountries()} onSelect={setSearch}/>
   }
 
   return (
