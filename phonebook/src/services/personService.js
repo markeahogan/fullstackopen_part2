@@ -16,7 +16,7 @@ const add = (person) => {
 
 const remove = (id) => {
     return axios
-        .delete(id)
+        .delete(`${serverURL}/${id})
         .then(x => x.data);
 }
 
