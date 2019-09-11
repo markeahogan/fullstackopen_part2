@@ -14,10 +14,16 @@ const add = (person) => {
         .then(x => x.data);
 }
 
+const update = (id, person) => {
+    return axios
+        .put(`${serverURL}/${id}`, person)
+        .then(x => x.data);
+}
+
 const remove = (id) => {
     return axios
         .delete(`${serverURL}/${id}`)
         .then(x => x.data);
 }
 
-export default {getAll, add, remove};
+export default {getAll, add, update, remove};

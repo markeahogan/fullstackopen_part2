@@ -18,19 +18,23 @@ const App = () => {
   const onSubmit = (event) => {
     event.preventDefault();
 
-    if (persons.findIndex(x => x.name === newName) === -1){
-      const newPerson = {
-        name:newName,
-        number:newNumber
-      };
+    const newPerson = {
+      name:newName,
+      number:newNumber
+    };
+
+    const personExistsAlready = persons.find(x => x.name === newPerson.name);
+
+    if (!personExistsAlready){
       personService.add(newPerson)
-        .then(x => setPersons(persons.concat(newPerson)));
-        
-      setNewName('');
-      setNewNumber('');
-    } else {
-      alert(`${newName} is already added to phonebook`);
+        .then(x => setPersons(persons.concat(x)));
+    }else{
+      personService.update(personExistsAlready.id, newPerson)
+        .then(person => setPersons(persons.map(x => x.id === person.id ? person : x)));
     }
+    
+    setNewName('');
+    setNewNumber('');
   }
 
   const filterPersons = () => {
