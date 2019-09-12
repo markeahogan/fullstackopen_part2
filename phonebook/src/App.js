@@ -43,6 +43,9 @@ const App = () => {
   }
 
   const remove = (id) => {
+    const person = persons.find(x=>x.id===id);
+    if (confirm(`Do you want to delete ${person.name}`) === false) return;
+
     personService.remove(id)
       .then(() => {
         setPersons(persons.filter(x => x.id !== id));
