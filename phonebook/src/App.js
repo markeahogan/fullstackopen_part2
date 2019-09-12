@@ -3,13 +3,14 @@ import personService from './services/personService';
 import Filter from './components/Filter';
 import PersonForm from './components/PersonForm';
 import Persons from './components/Persons';
+import Notification from './components/Notification';
 
 const App = () => {
   const [ persons, setPersons] = useState([]);
   const [ newName, setNewName ] = useState('');
   const [ newNumber, setNewNumber ] = useState('');
   const [ filter, setFilter ] = useState('');
-  const [ notification, setNotification ] = useState('');
+  const [ notification, setNotification ] = useState({message:'', style:'success'});
 
   useEffect(() => {
     personService.getAll()
@@ -37,27 +38,29 @@ const App = () => {
       personService.add(newPerson)
         .then(x => {
           setPersons(persons.concat(x))
-          setNotification('Added');
-          setTimeout(() => setNotification(''), 2000);
+          notifySuccess(`Added ${newPerson.name}`);
         });
     }else{
       personService.update(personExistsAlready.id, newPerson)
         .then(person => {
           setPersons(persons.map(x => x.id === person.id ? person : x))
-          setNotification('Updated');
-          setTimeout(() => setNotification(''), 2000);
+          notifySuccess(`Updated ${newPerson.name}`);
         });
     }
   }
   
   const remove = (id) => {
     const person = persons.find(x=>x.id===id);
-    if (confirm(`Do you want to delete ${person.name}`) === false) return;
+    if (window.confirm(`Do you want to delete ${person.name}`) === false) return;
     
     personService.remove(id)
     .then(() => {
-        setPersons(persons.filter(x => x.id !== id));
-      });
+      setPersons(persons.filter(x => x.id !== id));
+      notifySuccess(`Deleted ${person.name}`);
+    })
+    .catch(() => {
+      notifyError(`Information of ${person.name} has already been removed from server`);
+    });
   }
 
   const filterPersons = () => {
@@ -65,10 +68,19 @@ const App = () => {
     return persons.filter(x => x.name.toLowerCase().includes(filter.toLowerCase()));
   }
 
+  const notifySuccess = (message) => notify(message, 'success');
+
+  const notifyError = (message) => notify(message, 'error');
+
+  const notify = (message, style) => {    
+    setNotification({message, style});
+    setTimeout(() => setNotification({message:'', style:'success'}), 2000);
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>      
-      <Notification message={""}/>
+      <Notification message={notification.message} style={notification.style}/>
       <Filter text={filter} onChange={(e) => setFilter(e.target.value)} />
       <h2>Add new</h2>   
       <PersonForm name={newName} number={newNumber}
